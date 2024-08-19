@@ -34,7 +34,16 @@ Run all tests:
 `cargo t`
 
 
-b) Bazel: Todo
+b) Bazel: Currently broken 
+
+`bazel build //...`
+
+Throws error: Failed to receive migrations dir from Some("migrations")
+
+
+Run all tests:
+
+`bazel test //...`
 
 # Custom Array and Data Types in Postgres
 

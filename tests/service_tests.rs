@@ -1,8 +1,8 @@
-use custom_arrays::model::endpoint_type::Endpoint;
-use custom_arrays::model::protocol_type::ProtocolType;
-use custom_arrays::model::service;
-use custom_arrays::model::service::{CreateService, UpdateService};
-use custom_arrays::Connection;
+use bazel_diesel_postgres::model::endpoint_type::Endpoint;
+use bazel_diesel_postgres::model::protocol_type::ProtocolType;
+use bazel_diesel_postgres::model::service;
+use bazel_diesel_postgres::model::service::{CreateService, UpdateService};
+use bazel_diesel_postgres::Connection;
 use diesel::{Connection as DieselConnection, PgConnection};
 use dotenvy::dotenv;
 use std::env;
@@ -16,7 +16,7 @@ fn postgres_connection() -> PgConnection {
 }
 
 fn test_db_migration(conn: &mut Connection) {
-    let res = custom_arrays::run_db_migration(conn);
+    let res = bazel_diesel_postgres::run_db_migration(conn);
     //dbg!(&result);
     assert!(res.is_ok());
 }

@@ -1,0 +1,12 @@
+[package]
+name = "bazel-diesel-postgres"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+diesel = { version = "2.2.0", default-features = false, features = ["postgres", "r2d2"] }
+diesel_migrations = { version = "2.2.0", default-features = false, features = ["postgres"] }
+
+[dev-dependencies]
+dotenvy = "0.15"

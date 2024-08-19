@@ -1,0 +1,67 @@
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library")
+
+## Define files to copy
+
+filegroup(
+    name = "diesel_config",
+    srcs = glob([
+        "diesel.toml",
+    ]),
+)
+
+# Copy files
+copy_file(
+    # Name of the rule.
+    name = "copy_diesel_toml",
+    # An input label
+    src = ":diesel_config",
+    # Path of the output file, relative to this package.
+    out = "diesel.tml",
+)
+
+copy_to_directory(
+    # Name of the rule.
+    name = "copy_migrations",
+    # The directory to make a copy of
+    srcs = ["//migrations"],
+    # Path of the output directory, relative to this package.
+    out = "migrations",
+)
+
+rust_library(
+    name = "services",
+    srcs = glob([
+        "src/**",
+    ]),
+    crate_root = "src/lib.rs",
+    data = [
+       ":copy_diesel_toml",
+       ":copy_migrations",
+    ],
+    tags = [
+        "database",
+        "postgres",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        # External crates
+        "@crates//:diesel",
+        "@crates//:diesel_migrations",
+    ],
+)
+
+rust_doc(
+    name = "doc",
+    crate = ":services",
+    tags = ["doc"],
+    visibility = ["//visibility:public"],
+)
+
+rust_doc_test(
+    name = "doc_test",
+    crate = ":services",
+    tags = ["doc-test"],
+    visibility = ["//visibility:public"],
+)

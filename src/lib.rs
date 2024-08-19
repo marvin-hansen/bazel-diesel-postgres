@@ -1,11 +1,12 @@
-use diesel::r2d2::R2D2Connection;
 use diesel::PgConnection;
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use std::error::Error;
+use diesel::r2d2::R2D2Connection;
 
 pub mod model;
 mod schema;
 
+// use diesel::r2d2::R2D2Connection;
 // Alias for a pooled connection.
 // pub type Connection = diesel::r2d2::PooledConnection<diesel::r2d2::ConnectionManager<diesel::pg::PgConnection>>;
 

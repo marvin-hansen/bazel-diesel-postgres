@@ -1,0 +1,61 @@
+module(
+    name = "bazel-diesel-postgres",
+    version = "0.1.0",
+)
+
+###############################################################################
+# B A Z E L   D E P E N D E N C I E S # https://registry.bazel.build/
+###############################################################################
+
+# https://github.com/aspect-build/bazel-lib/releases
+bazel_dep(name = "aspect_bazel_lib", version = "2.8.0")
+
+# https://github.com/bazelbuild/rules_rust/releases
+bazel_dep(name = "rules_rust", version = "0.49.1")
+
+###############################################################################
+# T O O L C H A I N S
+###############################################################################
+
+##################
+# Rust toolchain #
+##################
+RUST_EDITION = "2021"
+RUST_VERSION = "1.80.1"
+
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = RUST_EDITION,
+    versions = [RUST_VERSION],
+)
+use_repo(rust, "rust_toolchains")
+
+register_toolchains("@rust_toolchains//:all")
+
+###############################################################################
+# R U S T  C R A T E S
+###############################################################################
+
+crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
+# External crates
+crate.spec(
+    default_features = False,
+    features = [
+        "postgres",
+        "r2d2",
+    ],
+    package = "diesel",
+    version = "2.2.2",
+)
+crate.spec(
+    default_features = False,
+    features = ["postgres"],
+    package = "diesel_migrations",
+    version = "2.2.0",
+)
+crate.spec(
+    package = "dotenvy",
+    version = "0.15",
+)
+crate.from_specs()
+use_repo(crate, "crates")

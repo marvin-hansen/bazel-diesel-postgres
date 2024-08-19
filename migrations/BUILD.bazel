@@ -1,0 +1,11 @@
+filegroup(
+    name = "migrations",
+    srcs = glob([
+        "00000000000000_diesel_initial_setup/down.sql",
+        "00000000000000_diesel_initial_setup/up.sql",
+        "2024-08-15-070500_services/down.sql",
+        "2024-08-15-070500_services/up.sql",
+        ".keep",
+    ]),
+    visibility = ["//visibility:public"],
+)

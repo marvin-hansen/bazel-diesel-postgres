@@ -41,7 +41,7 @@ b) Bazel: Currently broken
 Throws error: Failed to receive migrations dir from Some("migrations")
 
 
-Run all tests:
+Run all tests: Currently unsupported until build with Bazel got fixed. 
 
 `bazel test //...`
 

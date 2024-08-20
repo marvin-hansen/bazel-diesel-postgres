@@ -1,32 +1,16 @@
-load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
-load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@bazel_skylib//rules:copy_directory.bzl", "copy_directory")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library")
 
-# Define Diesel config file
-filegroup(
-    name = "diesel_toml",
-    srcs = glob([
-        "diesel.toml",
-    ]),
-)
-
-# Copy files
 copy_file(
-    # Name of the rule.
     name = "copy_diesel_toml",
-    # An input label
-    src = ":diesel_toml",
-    # Path of the output file, relative to this package.
-    out = "diesel.toml", # Why must the out name be different from the input file???
+    src = "manifest/diesel.toml",
+    out = "diesel.toml",
 )
 
-# Copy migration folder into source folder so that Diesel can find it.
-copy_to_directory(
-    # Name of the rule.
+copy_directory(
     name = "copy_migrations",
-    # The directory to make a copy of
-    srcs = ["//migrations"],
-    # Path of the output directory, relative to this package.
+    src = "migrations",
     out = "migrations",
 )
 

@@ -7,8 +7,8 @@ module(
 # B A Z E L   D E P E N D E N C I E S # https://registry.bazel.build/
 ###############################################################################
 
-# https://github.com/aspect-build/bazel-lib/releases
-bazel_dep(name = "aspect_bazel_lib", version = "2.8.0")
+# https://github.com/bazelbuild/bazel-skylib/releases/
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
 
 # https://github.com/bazelbuild/rules_rust/releases
 bazel_dep(name = "rules_rust", version = "0.49.1")

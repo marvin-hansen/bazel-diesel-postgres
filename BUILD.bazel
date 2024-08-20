@@ -4,16 +4,12 @@ load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library")
 
 filegroup(
     name = "cargo_manifest",
-    srcs = glob([
-        "Cargo.toml",
-    ]),
+    srcs = ["Cargo.toml"],
 )
 
 filegroup(
     name = "diesel_toml",
-    srcs = glob([
-        "diesel.toml",
-    ]),
+    srcs = ["diesel.toml"],
 )
 
 copy_directory(
@@ -31,7 +27,7 @@ rust_library(
        ":copy_migrations",
     ],
     rustc_env = {
-        "CARGO_MANIFEST_DIR": "/path/to/bazel-diesel-postgres",
+        "CARGO_MANIFEST_DIR": "/Users/marvin/RustroverProjects/forks/bazel-diesel-postgres",
     },
     deps = [
         # External crates

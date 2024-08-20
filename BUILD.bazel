@@ -18,7 +18,7 @@ rust_library(
     name = "services",
     srcs = glob([ "src/**"]),
     crate_root = "src/lib.rs",
-    data = [
+    compile_data = [
        ":copy_diesel_toml",
        ":copy_migrations",
     ],

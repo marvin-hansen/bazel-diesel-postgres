@@ -2,10 +2,18 @@ load("@bazel_skylib//rules:copy_directory.bzl", "copy_directory")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library")
 
-copy_file(
-    name = "copy_diesel_toml",
-    src = "manifest/diesel.toml",
-    out = "diesel.toml",
+filegroup(
+    name = "cargo_manifest",
+    srcs = glob([
+        "Cargo.toml",
+    ]),
+)
+
+filegroup(
+    name = "diesel_toml",
+    srcs = glob([
+        "diesel.toml",
+    ]),
 )
 
 copy_directory(
@@ -19,13 +27,12 @@ rust_library(
     srcs = glob([ "src/**"]),
     crate_root = "src/lib.rs",
     compile_data = [
-       ":copy_diesel_toml",
+       ":diesel_toml",
        ":copy_migrations",
     ],
-    tags = [
-        "database",
-        "postgres",
-    ],
+    rustc_env = {
+        "CARGO_MANIFEST_DIR": "/path/to/bazel-diesel-postgres",
+    },
     deps = [
         # External crates
         "@crates//:diesel",

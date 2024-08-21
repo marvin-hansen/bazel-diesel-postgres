@@ -17,6 +17,7 @@ Any postgres version past version 14 should suffice. Versions before 14 may work
 Note, if your postgres server uses a different default database or password, 
 ensure you update the POSTGRES_DATABASE_URL in the .env file accordingly.
 
+To build the crate with Bazel, ensure you have [Bazelisk installed](https://github.com/bazelbuild/bazelisk/releases). 
 
 3) Run the example
 
@@ -34,14 +35,11 @@ Run all tests:
 `cargo t`
 
 
-b) Bazel: Currently broken 
+b) Bazel: 
 
 `bazel build //...`
 
-Throws error: Failed to receive migrations dir from Some("migrations")
-
-
-Run all tests: Currently unsupported until build with Bazel got fixed. 
+Run all tests: 
 
 `bazel test //...`
 

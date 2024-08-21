@@ -5,7 +5,7 @@ load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library")
 genrule(
     name = "gen_env_file",
     srcs = ["Cargo.toml"],
-    outs = ["cargo_manifest.txt"],
+    outs = ["env_file.txt"],
     cmd =  """(
         # Get the absolute path
         input_path=$$(realpath Cargo.toml)
@@ -31,7 +31,7 @@ copy_directory(
 )
 
 rust_library(
-    name = "services",
+    name = "bazel-diesel-postgres",
     srcs = glob([ "src/**"]),
     crate_root = "src/lib.rs",
     compile_data = [
@@ -51,14 +51,14 @@ rust_library(
 
 rust_doc(
     name = "doc",
-    crate = ":services",
+    crate = ":bazel-diesel-postgres",
     tags = ["doc"],
     visibility = ["//visibility:public"],
 )
 
 rust_doc_test(
     name = "doc_test",
-    crate = ":services",
+    crate = ":bazel-diesel-postgres",
     tags = ["doc-test"],
     visibility = ["//visibility:public"],
 )

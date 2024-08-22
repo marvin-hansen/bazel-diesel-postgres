@@ -74,3 +74,35 @@ pub fn run_db_migration(
         Ok(())
     }
 }
+
+
+/// Revert all pending database migrations.
+///
+/// # Arguments
+///
+/// * `conn` - A mutable reference to a `Connection` object.
+///
+/// # Errors
+///
+/// * If there is an error while connecting to the database.
+/// * If there is an error while reverting the database migrations.
+///
+pub fn revert_db_migration(
+    conn: &mut Connection,
+) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
+    // Check DB connection!
+    if let Ok(_) = conn.ping() {
+    } else if let Err(e) = conn.ping() {
+        eprint!("[pg_cmdb]: Error connecting to database: {}", e);
+        return Err(Box::new(e));
+    }
+
+    // Revert all pending migrations
+    match conn.revert_all_migrations(MIGRATIONS) {
+        Ok(_) => Ok(()),
+        Err(e) => {
+            eprint!("[pg_cmdb]: Error reverting database migrations: {}", e);
+            Err(e)
+        }
+    }
+}

@@ -12,8 +12,14 @@ fn postgres_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-fn test_db_migration(conn: &mut Connection) {
+fn test_run_db_migration(conn: &mut Connection) {
     let res = bazel_diesel_postgres::run_db_migration(conn);
+    //dbg!(&result);
+    assert!(res.is_ok());
+}
+
+fn test_revert_db_migration(conn: &mut Connection) {
+    let res = bazel_diesel_postgres::revert_db_migration(conn);
     //dbg!(&result);
     assert!(res.is_ok());
 }
@@ -23,8 +29,8 @@ fn test_service() {
     let mut connection = postgres_connection();
     let conn = &mut connection;
 
-    println!("Test DB migration");
-    test_db_migration(conn);
+    println!("Test run DB migration");
+    test_run_db_migration(conn);
 
     println!("Test create!");
     test_create_service(conn);
@@ -67,6 +73,9 @@ fn test_service() {
 
     println!("Test delete service!");
     test_service_delete(conn);
+
+    println!("Test revert DB migration");
+    test_revert_db_migration(conn);
 }
 
 fn test_create_service(conn: &mut Connection) {

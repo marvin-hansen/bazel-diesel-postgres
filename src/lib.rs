@@ -15,11 +15,13 @@ mod schema;
 pub type Connection = PgConnection;
 
 
-// In a Cargo-Only project, you can use the embed_migrations macro.
-// pub const MIGRATIONS: EmbeddedMigrations =embed_migrations!("migrations");
+// In a Cargo-Only project, you can use the embed_migrations macro
+// by uncommenting the following line:
+// pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations");
 
 // In a Bazel project, the macro does not work, so we need
-// a custom migration embedding. This builds with Cargo and Bazel alike.
+// a custom migration embedding, which builds with Cargo and Bazel alike.
+// Remove this if you are using Cargo only and don't need Bazel.
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations::EMBEDDED_MIGRATIONS;
 
 

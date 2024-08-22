@@ -2,6 +2,9 @@
 
 Bazel configuration to build a Rust crate that uses Diesel with custom array data types in Postgres.
 
+A cargo-only version of this repo has recently (August 2024) been contributed to the Diesel project. 
+See [PR #4169](https://github.com/diesel-rs/diesel/pull/4169) for more details. 
+
 ### Setup:
 
 1) Start a Postgres server with database postgres and password postgres, either locally or in Docker i.e.
@@ -115,7 +118,7 @@ Table of Content:
 9. [Rust Types](#rust-types)
 10. [Additional methods](#additional-methods)
 11. [Applied Best Practices](#applied-best-practices)
-12. [Testing](#testing)
+12. [Testing](#integration-testing)
 
 In this guide, you learn more about the concepts listed below and illustrate the actual usage in Diesel with a sample
 project.
@@ -1058,7 +1061,7 @@ If you write a database layer for an existing system, this technique comes in ha
 between Diesel DB types and your target types while leaving your target types as it. And because you never know when you
 have to do this, it’s generally recommended to add type annotations to DB return types.
 
-## Testing
+## Integration Testing
 
 Diesel enables you to test your database schema and migration early on in the development process.
 To do so, you need only meed:
@@ -1091,8 +1094,6 @@ then construct a connection, and lastly return the connection.
 Remember, this is just a test util so there is no need to add anything more than necessary.
 
 ```rust
-use dotenvy::dotenv;
-
 fn postgres_connection() -> PgConnection {
     let database_url = "postgres://postgres:postgres@localhost/postgres";
     
@@ -1100,6 +1101,22 @@ fn postgres_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 ```
+
+We use an URL string for testing because Bazel is hermetic and, while you could add the .env or set an environment variable to the Bazel build, it is just simpler to use just an URL string instead of configuring Bazel targets.
+Also, this makes the test setup explicit with zero hidden assumptions about the environment, which helps when 
+debugging failing tests. 
+
+When you deal with tests that run in multiple environments or against multiple databases, you may want to write 
+a custom  configuration util that detects the environment based on a global env variable 
+and returns a connection URL based on the environment and target database.
+
+In Bazel, you can pass through global environment variables to all selected tests via the `--test_env` flag. 
+For example:
+
+```bash
+bazel test -c opt  //...  --test_tag_filters=integration_test --test_env=ENV=CI
+```
+
 
 ### DB Migration Util
 
@@ -1220,11 +1237,10 @@ fn test_revert_db_migration(conn: &mut Connection) {
 Note, these tests don't have the usual test macro annotation and that's by purpose,
 as explained in the next section about integration tests. 
 
-### DB Integration Tests
+### Test suite 
 
 Database integration tests become flaky when executed in parallel usually because of conflicting read / write
-operations.
-While modern database systems can handle concurrent data access, test tools with assertions not so much.
+operations. While modern database systems can handle concurrent data access, test tools with assertions not so much.
 That means, test assertions start to fail seemingly randomly when executed concurrently.
 There are only very few viable options to deal with this reality:
 
@@ -1294,10 +1310,17 @@ To get a more meaningful error message, just uncomment the dbg!
 statement that unwraps the result before the assertion and you will see a helpful error message in most cases.
 
 You may have noticed that the DB migration util checks if there are pending migrations and if there is nothing, it does
-nothing and just returns.
-The wisdom behind this decision is that, there are certain corner cases
+nothing and just returns. The wisdom behind this decision is that, there are certain corner cases
 that only occur when you run a database tet multiple times and you really want to run the DB migration just once to
-simulate that scenario as realistic as possible.
-When you test locally, the same logic applies and you really only want to run a database migration when the schema has
+simulate that scenario as realistic as possible. When you test locally, the same logic applies and you really only want to run a database migration when the schema has
 changed. 
 
+## Licence
+
+This project is licensed under the [MIT license](LICENSE).
+
+##  Author
+
+* [Marvin Hansen](https://github.com/marvin-hansen).
+* Github GPG key ID: 369D5A0B210D39BC
+* GPG Fingerprint: 4B18 F7B2 04B9 7A72 967E 663E 369D 5A0B 210D 39BC

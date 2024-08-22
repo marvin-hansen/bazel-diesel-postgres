@@ -1,19 +1,27 @@
 use diesel::r2d2::R2D2Connection;
 use diesel::PgConnection;
-use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+use diesel_migrations::{EmbeddedMigrations, MigrationHarness};
 use std::error::Error;
 
+mod embed_migrations;
 pub mod model;
 mod schema;
-
 // use diesel::r2d2::R2D2Connection;
-// Alias for a pooled connection.
+
+// Alias for a pooled database connection.
 // pub type Connection = diesel::r2d2::PooledConnection<diesel::r2d2::ConnectionManager<diesel::pg::PgConnection>>;
 
-// Alias for a normal, single, connection.
+// Alias for a normal, single, database connection.
 pub type Connection = PgConnection;
 
-pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations");
+
+// In a Cargo-Only project, you can use the embed_migrations macro.
+// pub const MIGRATIONS: EmbeddedMigrations =embed_migrations!("migrations");
+
+// In a Bazel project, the macro does not work, so we need
+// a custom migration embedding. This builds with Cargo and Bazel alike.
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations::EMBEDDED_MIGRATIONS;
+
 
 /// Runs all pending database migrations.
 ///

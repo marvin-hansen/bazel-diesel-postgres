@@ -6,7 +6,6 @@ use bazel_diesel_postgres::Connection;
 use diesel::{Connection as DieselConnection, PgConnection};
 
 fn postgres_connection() -> PgConnection {
-
     let database_url = "postgres://postgres:postgres@localhost/postgres";
 
     PgConnection::establish(&database_url)

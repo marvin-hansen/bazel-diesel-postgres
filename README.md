@@ -42,7 +42,7 @@ Run all tests:
 
 `bazel test //...`
 
-### Embedded Migrations
+### Embedded DB Migrations
 
 Conventionally, you would use the `diesel_migrations` macro to manage your embedded database migrations.
 However, because of
@@ -1094,19 +1094,12 @@ Remember, this is just a test util so there is no need to add anything more than
 use dotenvy::dotenv;
 
 fn postgres_connection() -> PgConnection {
-    dotenv().ok();
-
-    let database_url = env::var("POSTGRES_DATABASE_URL")
-    .expect("POSTGRES_DATABASE_URL must be set");
+    let database_url = "postgres://postgres:postgres@localhost/postgres";
     
     PgConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 ```
-
-Here we use the dotenv crate to test if there is an environment variable of either DATABASE_URL or POSTGRES_DATABASE_URL
-and if so, parse the string and use it to establish a connection. Therefore, make sure the POSTGRES_DATABASE_URL is set
-correctly.
 
 ### DB Migration Util
 
@@ -1184,6 +1177,49 @@ a random error might happened at any stage of the migration, therefore you have 
 Also, because you run the db migration during application startup or before testing,
 ensure you have clear error messages to speed up diagnostic and debugging.
 
+Next up, we add function to revert all migrations to the lib.rs file.
+
+```rust 
+pub fn revert_db_migration(
+    conn: &mut Connection,
+) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
+    // Check DB connection!
+    if let Ok(_) = conn.ping() {
+    } else if let Err(e) = conn.ping() {
+        eprint!("[pg_cmdb]: Error connecting to database: {}", e);
+        return Err(Box::new(e));
+    }
+
+    // Revert all pending migrations
+    match conn.revert_all_migrations(MIGRATIONS) {
+        Ok(_) => Ok(()),
+        Err(e) => {
+            eprint!("[pg_cmdb]: Error reverting database migrations: {}", e);
+            Err(e)
+        }
+    }
+}
+```
+
+And that's it as far as embedded migrations are concerned. Now you can focus on the tests.
+Let's add two new tests that check if the database is migrated and reverted properly.
+```rust 
+fn test_run_db_migration(conn: &mut Connection) {
+    let res = bazel_diesel_postgres::run_db_migration(conn);
+    //dbg!(&result);
+    assert!(res.is_ok());
+}
+
+fn test_revert_db_migration(conn: &mut Connection) {
+    let res = bazel_diesel_postgres::revert_db_migration(conn);
+    //dbg!(&result);
+    assert!(res.is_ok());
+}
+```
+
+Note, these tests don't have the usual test macro annotation and that's by purpose,
+as explained in the next section about integration tests. 
+
 ### DB Integration Tests
 
 Database integration tests become flaky when executed in parallel usually because of conflicting read / write
@@ -1226,7 +1262,7 @@ fn test_service() {
     let conn = &mut connection;
 
     println!("Test DB migration");
-    test_db_migration(conn);
+    test_run_db_migration(conn);
 
     println!("Test create!");
     test_create_service(conn);
@@ -1235,6 +1271,9 @@ fn test_service() {
     test_count_service(conn);
     
     //...
+    
+    println!("Test revert DB migration");
+    test_revert_db_migration(conn);
 }    
 
 fn test_db_migration(conn: &mut Connection) {

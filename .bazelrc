@@ -17,10 +17,6 @@ build:windows --enable_runfiles
 ## Build configuration
 ###############################################################################
 
-# Debug toolchain resolution
-# Just hope you never need this again.
-# build --toolchain_resolution_debug='@bazel_tools//tools/cpp:toolchain_type
-
 # Don't create bazel-* symlinks in the WORKSPACE directory.
 # Instead, set a prefix and put it in .gitignore
 build --symlink_prefix=target-bzl/
@@ -29,16 +25,8 @@ build --symlink_prefix=target-bzl/
 # Only use locally and uncomment before pushing to CI.
 build --incompatible_disallow_empty_glob
 
-# This flag improves execution throughput by executing more actions in parallel.
+# This flag improves execution throughput by running more actions in parallel.
 build --jobs=32
-
-###############################################################################
-## Test configuration
-###############################################################################
-
-# Reduce test output to just error cases and report timeout warnings.
-test --test_output=errors
-test --verbose_failures
 
 ###############################################################################
 ## Common configuration
@@ -55,14 +43,39 @@ common --experimental_platform_in_output_dir
 # https://www.buildbuddy.io/blog/debugging-slow-bazel-builds/
 # https://www.buildbuddy.io/blog/how-bazel-7-0-makes-your-builds-faster/
 common --nolegacy_important_outputs
-common --verbose_failures
-common --reuse_sandbox_directories
 common --noexperimental_merged_skyframe_analysis_execution
+common --verbose_failures
 
 # Enable a more detailed performance profile
 common --noslim_profile
 common --experimental_profile_include_target_label
 common --experimental_profile_include_primary_output
+
+###############################################################################
+## Cross compilation configuration
+###############################################################################
+
+# Debug toolchain resolution
+common --toolchain_resolution_debug='@bazel_tools//tools/cpp:toolchain_type
+
+# Enable C++ toolchain resolution.
+common --incompatible_enable_cc_toolchain_resolution
+
+# Support linux-x86_64
+common --platforms=//build/platforms:linux-x86_64
+common --extra_execution_platforms=//build/platforms:linux-x86_64
+
+# Extra Cross compilation execution platforms
+# build --extra_execution_platforms=//build/platforms:linux-aarch64
+# build --extra_execution_platforms=//build/platforms:linux-x86_64
+
+###############################################################################
+## Test configuration
+###############################################################################
+
+# Reduce test output to just error cases and report timeout warnings.
+test --test_output=errors
+test --verbose_failures
 
 ###############################################################################
 ## Custom user flags

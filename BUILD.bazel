@@ -1,6 +1,6 @@
 load("@bazel_skylib//rules:copy_directory.bzl", "copy_directory")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library", "rust_binary")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc", "rust_doc_test", "rust_library")
 
 # LLVM Toolchain resolution fails for aarch64
 # rust_binary(
@@ -20,10 +20,10 @@ rust_binary(
     srcs = ["src/bin/main.rs"],
     platform = "//build/platforms:linux-x86_64",
     deps = [
-    # Internal crates
-    "//:bazel-diesel-postgres",
-     # External crates
-    "//thirdparty/crates:diesel",
+        # Internal crates
+        "//:bazel-diesel-postgres",
+        # External crates
+        "//thirdparty/crates:diesel",
     ],
 )
 
@@ -31,37 +31,37 @@ rust_binary(
     name = "hello_diesel_host",
     srcs = ["src/bin/main.rs"],
     deps = [
-    # Internal crates
-    "//:bazel-diesel-postgres",
-     # External crates
-    "//thirdparty/crates:diesel",
+        # Internal crates
+        "//:bazel-diesel-postgres",
+        # External crates
+        "//thirdparty/crates:diesel",
     ],
 )
 
 rust_library(
     name = "bazel-diesel-postgres",
-    srcs = glob([ "src/**"]),
-    crate_root = "src/lib.rs",
+    srcs = glob(["src/**"]),
     compile_data = [
-       ":diesel_toml",
-       ":copy_migrations",
+        ":diesel_toml",
+        ":copy_migrations",
     ],
-    rustc_env_files =[
-        ":gen_env_file"
+    crate_root = "src/lib.rs",
+    rustc_env_files = [
+        ":gen_env_file",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         # External crates
         "//thirdparty/crates:diesel",
         "//thirdparty/crates:diesel_migrations",
     ],
-    visibility = ["//visibility:public"],
 )
 
 genrule(
     name = "gen_env_file",
     srcs = ["Cargo.toml"],
     outs = ["env_file.txt"],
-    cmd =  """(
+    cmd = """(
         # Get the absolute path
         input_path=$$(realpath Cargo.toml)
 
@@ -71,7 +71,7 @@ genrule(
         # Output the modified path
         echo "CARGO_MANIFEST_DIR=$$result_path"
      ) | tee $@""",
-     executable = True
+    executable = True,
 )
 
 filegroup(

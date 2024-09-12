@@ -23,7 +23,7 @@ build --symlink_prefix=target-bzl/
 
 # Non-empty glob test is disabled because some Bazels deps fail the test.
 # Only use locally and uncomment before pushing to CI.
-build --incompatible_disallow_empty_glob
+# build --incompatible_disallow_empty_glob
 
 # This flag improves execution throughput by running more actions in parallel.
 build --jobs=32
@@ -56,14 +56,14 @@ common --experimental_profile_include_primary_output
 ###############################################################################
 
 # Debug toolchain resolution
-common --toolchain_resolution_debug='@bazel_tools//tools/cpp:toolchain_type
+# common --toolchain_resolution_debug='@bazel_tools//tools/cpp:toolchain_type
 
 # Enable C++ toolchain resolution.
 common --incompatible_enable_cc_toolchain_resolution
 
 # Extra Cross compilation execution platforms
-# build --extra_execution_platforms=//build/platforms:linux-aarch64
-# build --extra_execution_platforms=//build/platforms:linux-x86_64
+build --extra_execution_platforms=//build/platforms:linux-aarch64
+build --extra_execution_platforms=//build/platforms:linux-x86_64
 
 ###############################################################################
 ## Test configuration

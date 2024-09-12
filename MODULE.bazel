@@ -20,7 +20,14 @@ bazel_dep(name = "toolchains_llvm", version = "1.1.2")
 bazel_dep(name = "platforms", version = "0.0.10")
 
 # https://github.com/bazel-contrib/musl-toolchain/releases
-# bazel_dep(name = "toolchains_musl", version = "0.1.20", dev_dependency = True)
+bazel_dep(name = "toolchains_musl", version = "0.1.20", dev_dependency = True)
+
+bazel_dep(name = "libpq", version = "0.0.1")
+git_override(
+    module_name = "libpq",
+    remote = "https://github.com/brainhivenl/libpq",
+    commit ="ebdeb0cc9b8e051779e00b37ec0f93fab9ba8dd8",
+)
 
 # https://github.com/bazelbuild/bazel/blob/master/tools/build_defs/repo/http.bzl
 http_archive = use_repo_rule("@bazel_tools//:http.bzl", "http_archive")
@@ -126,4 +133,37 @@ register_toolchains("@rust_toolchains//:all")
 # RUST CRATES
 ###############################################################################
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
-# Vendored deps. See thirdparty/BUILD.bazel
+# External crates
+crate.spec(
+    default_features = False,
+    features = [
+        "postgres",
+        "r2d2",
+    ],
+    package = "diesel",
+    version = "2.2.2",
+)
+crate.spec(
+    default_features = False,
+    features = ["postgres"],
+    package = "diesel_migrations",
+    version = "2.2.0",
+)
+crate.spec(
+    package = "dotenvy",
+    version = "0.15",
+)
+crate.from_specs()
+use_repo(crate, "crates")
+
+crate.annotation(
+    crate = "pq-sys",
+    build_script_env = {
+        "PQ_LIB_STATIC": "1",
+    },
+    rustc_flags = [
+        "-L",
+        "$(BINDIR)/external/libpq~~_repo_rules~postgres",
+    ],
+    data = ["@@libpq~~_repo_rules~postgres//:libpq"],
+)

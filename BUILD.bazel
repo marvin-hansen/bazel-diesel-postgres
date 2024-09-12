@@ -2,18 +2,17 @@ load("@bazel_skylib//rules:copy_directory.bzl", "copy_directory")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc", "rust_doc_test", "rust_library")
 
-# LLVM Toolchain resolution fails for aarch64
-# rust_binary(
-#     name = "hello_diesel_linux_aarch64",
-#     srcs = ["src/bin/main.rs"],
-#     platform = "//build/platforms:linux-aarch64",
-#     deps = [
-#     # Internal crates
-#     "//:bazel-diesel-postgres",
-#      # External crates
-#     "//thirdparty/crates:diesel",
-#     ],
-# )
+rust_binary(
+    name = "hello_diesel_linux_aarch64",
+    srcs = ["src/bin/main.rs"],
+    platform = "//build/platforms:linux-aarch64",
+    deps = [
+    # Internal crates
+    "//:bazel-diesel-postgres",
+     # External crates
+     "@crates//:diesel",
+    ],
+)
 
 rust_binary(
     name = "hello_diesel_linux_x86_64",
@@ -23,7 +22,7 @@ rust_binary(
         # Internal crates
         "//:bazel-diesel-postgres",
         # External crates
-        "//thirdparty/crates:diesel",
+        "@crates//:diesel",
     ],
 )
 
@@ -34,7 +33,7 @@ rust_binary(
         # Internal crates
         "//:bazel-diesel-postgres",
         # External crates
-        "//thirdparty/crates:diesel",
+        "@crates//:diesel",
     ],
 )
 
@@ -52,8 +51,8 @@ rust_library(
     visibility = ["//visibility:public"],
     deps = [
         # External crates
-        "//thirdparty/crates:diesel",
-        "//thirdparty/crates:diesel_migrations",
+        "@crates//:diesel",
+        "@crates//:diesel_migrations",
     ],
 )
 

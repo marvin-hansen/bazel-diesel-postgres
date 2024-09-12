@@ -43,8 +43,8 @@ rust_library(
     ],
     deps = [
         # External crates
-        "@crates//:diesel",
-        "@crates//:diesel_migrations",
+        "//thirdparty/crates:diesel",
+        "//thirdparty/crates:diesel_migrations",
     ],
     visibility = ["//visibility:public"],
 )

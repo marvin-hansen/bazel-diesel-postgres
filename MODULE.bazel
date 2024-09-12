@@ -35,27 +35,5 @@ register_toolchains("@rust_toolchains//:all")
 ###############################################################################
 # R U S T  C R A T E S
 ###############################################################################
-
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
-# External crates
-crate.spec(
-    default_features = False,
-    features = [
-        "postgres",
-        "r2d2",
-    ],
-    package = "diesel",
-    version = "2.2.2",
-)
-crate.spec(
-    default_features = False,
-    features = ["postgres"],
-    package = "diesel_migrations",
-    version = "2.2.0",
-)
-crate.spec(
-    package = "dotenvy",
-    version = "0.15",
-)
-crate.from_specs()
-use_repo(crate, "crates")
+# Vendored deps. See thirdparty/BUILD.bazel

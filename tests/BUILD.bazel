@@ -14,7 +14,7 @@ rust_test_suite(
         # Crate to test
         "//:bazel-diesel-postgres",
         # External crates
-        "@crates//:diesel",
-        "@crates//:dotenvy",
+        "//thirdparty/crates:diesel",
+        "//thirdparty/crates:dotenvy",
     ],
 )

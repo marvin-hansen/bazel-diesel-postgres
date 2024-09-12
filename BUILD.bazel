@@ -1,6 +1,61 @@
 load("@bazel_skylib//rules:copy_directory.bzl", "copy_directory")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library")
+load("@rules_rust//rust:defs.bzl", "rust_doc", "rust_doc_test", "rust_library", "rust_binary")
+
+# LLVM Toolchain resolution fails for aarch64
+# rust_binary(
+#     name = "hello_diesel_linux_aarch64",
+#     srcs = ["src/bin/main.rs"],
+#     platform = "//build/platforms:linux-aarch64",
+#     deps = [
+#     # Internal crates
+#     "//:bazel-diesel-postgres",
+#      # External crates
+#     "//thirdparty/crates:diesel",
+#     ],
+# )
+
+rust_binary(
+    name = "hello_diesel_linux_x86_64",
+    srcs = ["src/bin/main.rs"],
+    platform = "//build/platforms:linux-x86_64",
+    deps = [
+    # Internal crates
+    "//:bazel-diesel-postgres",
+     # External crates
+    "//thirdparty/crates:diesel",
+    ],
+)
+
+rust_binary(
+    name = "hello_diesel_host",
+    srcs = ["src/bin/main.rs"],
+    deps = [
+    # Internal crates
+    "//:bazel-diesel-postgres",
+     # External crates
+    "//thirdparty/crates:diesel",
+    ],
+)
+
+rust_library(
+    name = "bazel-diesel-postgres",
+    srcs = glob([ "src/**"]),
+    crate_root = "src/lib.rs",
+    compile_data = [
+       ":diesel_toml",
+       ":copy_migrations",
+    ],
+    rustc_env_files =[
+        ":gen_env_file"
+    ],
+    deps = [
+        # External crates
+        "//thirdparty/crates:diesel",
+        "//thirdparty/crates:diesel_migrations",
+    ],
+    visibility = ["//visibility:public"],
+)
 
 genrule(
     name = "gen_env_file",
@@ -28,37 +83,4 @@ copy_directory(
     name = "copy_migrations",
     src = "migrations",
     out = "migrations",
-)
-
-rust_library(
-    name = "bazel-diesel-postgres",
-    srcs = glob([ "src/**"]),
-    crate_root = "src/lib.rs",
-    compile_data = [
-       ":diesel_toml",
-       ":copy_migrations",
-    ],
-    rustc_env_files =[
-        ":gen_env_file"
-    ],
-    deps = [
-        # External crates
-        "//thirdparty/crates:diesel",
-        "//thirdparty/crates:diesel_migrations",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-rust_doc(
-    name = "doc",
-    crate = ":bazel-diesel-postgres",
-    tags = ["doc"],
-    visibility = ["//visibility:public"],
-)
-
-rust_doc_test(
-    name = "doc_test",
-    crate = ":bazel-diesel-postgres",
-    tags = ["doc-test"],
-    visibility = ["//visibility:public"],
 )

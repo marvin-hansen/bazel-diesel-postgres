@@ -61,10 +61,6 @@ common --toolchain_resolution_debug='@bazel_tools//tools/cpp:toolchain_type
 # Enable C++ toolchain resolution.
 common --incompatible_enable_cc_toolchain_resolution
 
-# Support linux-x86_64
-common --platforms=//build/platforms:linux-x86_64
-common --extra_execution_platforms=//build/platforms:linux-x86_64
-
 # Extra Cross compilation execution platforms
 # build --extra_execution_platforms=//build/platforms:linux-aarch64
 # build --extra_execution_platforms=//build/platforms:linux-x86_64

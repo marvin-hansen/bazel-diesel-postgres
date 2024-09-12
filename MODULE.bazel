@@ -19,6 +19,9 @@ bazel_dep(name = "toolchains_llvm", version = "1.1.2")
 # https://github.com/bazelbuild/platforms/releases
 bazel_dep(name = "platforms", version = "0.0.10")
 
+# https://github.com/bazel-contrib/musl-toolchain/releases
+# bazel_dep(name = "toolchains_musl", version = "0.1.20", dev_dependency = True)
+
 # https://github.com/bazelbuild/bazel/blob/master/tools/build_defs/repo/http.bzl
 http_archive = use_repo_rule("@bazel_tools//:http.bzl", "http_archive")
 
@@ -49,7 +52,6 @@ http_archive(
     sha256 = "902d1a40a5fd8c3764a36c8d377af5945a92e3d264c6252855bda4d7ef81d3df",
     urls = ["https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/41a6c8dec4c4304d6509e30cbaf9218dffb4438e/debian_bullseye_arm64_sysroot.tar.xz"],
 )
-
 # LLVM setup
 # https://github.com/bazel-contrib/toolchains_llvm/tree/0d302de75f6ace071ac616fb274481eedcc20e5a?tab=readme-ov-file#sysroots
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
@@ -70,6 +72,7 @@ llvm.toolchain(
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
 
 # X86 LLVM Toolchain with sysroot.
+# https://github.com/bazel-contrib/toolchains_llvm/blob/master/tests/WORKSPACE.bzlmod
 llvm.toolchain(
     name = "llvm_toolchain_x86_with_sysroot",
     llvm_versions = LLVM_VERSIONS,
@@ -82,6 +85,7 @@ llvm.sysroot(
 use_repo(llvm, "llvm_toolchain_x86_with_sysroot")
 
 # ARM (aarch64) LLVM Toolchain with sysroot.
+# https://github.com/bazelbuild/rules_rust/blob/main/examples/bzlmod/cross_compile/WORKSPACE.bzlmod
 llvm.toolchain(
     name = "llvm_toolchain_aarch64_with_sysroot",
     llvm_versions = LLVM_VERSIONS,

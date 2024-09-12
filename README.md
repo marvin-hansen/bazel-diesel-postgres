@@ -45,6 +45,23 @@ Run all tests:
 
 `bazel test //...`
 
+### Update dependencies
+
+All Bazel dependencies are locally vendored and managed in thirdparty/BUILD.bazel.
+
+Update, add, or define the dependencies as needed.
+
+Then, run
+
+`bazel run //thirdparty:crates_vendor`
+
+And build the project again.
+
+`bazel build //...`
+
+If you want to preserve CARGO compatibility i.e. for better IDE support in JetBrains RustRover, 
+ensure your Bazel dependencies match exactly those in the Cargo.toml file.
+
 ### Embedded DB Migrations
 
 Conventionally, you would use the `diesel_migrations` macro to manage your embedded database migrations.

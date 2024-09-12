@@ -47,31 +47,13 @@ pub fn run_db_migration(
             return Err(Box::new(e));
         }
     }
-
-    // Check if DB has pending migrations
-    let has_pending = match conn.has_pending_migration(MIGRATIONS) {
-        Ok(has_pending) => has_pending,
+    // Run all pending migrations.
+    match conn.run_pending_migrations(MIGRATIONS) {
+        Ok(_) => Ok(()),
         Err(e) => {
-            eprint!(
-                "[run_db_migration]: Error checking for pending database migrations: {}",
-                e
-            );
-            return Err(e);
+            eprint!("[run_db_migration]: Error migrating database: {}", e);
+            Err(e)
         }
-    };
-
-    // If so, run all pending migrations.
-    if has_pending {
-        match conn.run_pending_migrations(MIGRATIONS) {
-            Ok(_) => Ok(()),
-            Err(e) => {
-                eprint!("[run_db_migration]: Error migrating database: {}", e);
-                Err(e)
-            }
-        }
-    } else {
-        // Nothing pending, just return
-        Ok(())
     }
 }
 

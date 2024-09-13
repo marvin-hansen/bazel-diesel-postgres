@@ -131,7 +131,38 @@ use_repo(rust, "rust_toolchains")
 register_toolchains("@rust_toolchains//:all")
 
 ###############################################################################
-# RUST CRATES
+# RUST SYSTEM DEPENDENCIES
 ###############################################################################
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
-# Vendored deps in thirdparty
+# External crates
+crate.spec(
+    default_features = False,
+    features = [
+        "postgres",
+        "r2d2",
+    ],
+    package = "diesel",
+    version = "2.2.2",
+)
+crate.spec(
+    default_features = False,
+    features = ["postgres"],
+    package = "diesel_migrations",
+    version = "2.2.0",
+)
+
+crate.from_specs()
+use_repo(crate, "crates")
+
+crate.annotation(
+    crate = "pq-sys",
+    build_script_env = {
+        "PQ_LIB_STATIC": "1",
+    },
+    gen_build_script = "off",
+    rustc_flags = [
+        "-L",
+        "$(BINDIR)/@@//alias:libpq",
+    ],
+    deps = ["@@//alias:libpq"],
+)

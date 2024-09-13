@@ -10,7 +10,7 @@ rust_binary(
     # Internal crates
     "//:bazel-diesel-postgres",
      # External crates
-     "@crates//:diesel",
+     "//thirdparty/crates:diesel",
     ],
 )
 
@@ -22,7 +22,7 @@ rust_binary(
         # Internal crates
         "//:bazel-diesel-postgres",
         # External crates
-        "@crates//:diesel",
+        "//thirdparty/crates:diesel",
     ],
 )
 
@@ -33,7 +33,7 @@ rust_binary(
         # Internal crates
         "//:bazel-diesel-postgres",
         # External crates
-        "@crates//:diesel",
+         "//thirdparty/crates:diesel",
     ],
 )
 
@@ -51,8 +51,8 @@ rust_library(
     visibility = ["//visibility:public"],
     deps = [
         # External crates
-        "@crates//:diesel",
-        "@crates//:diesel_migrations",
+        "//thirdparty/crates:diesel",
+        "//thirdparty/crates:diesel_migrations",
     ],
 )
 

@@ -1,0 +1,5 @@
+alias(
+    name = "libpq",
+    actual = "@libpq",
+    visibility = ["//visibility:public"],
+)

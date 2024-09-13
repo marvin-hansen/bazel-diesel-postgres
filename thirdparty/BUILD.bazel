@@ -16,7 +16,7 @@ crates_vendor(
             ),
         ],
     },
-    mode = "local",
+    mode = "remote",
     packages = {
         "diesel": crate.spec(
             default_features = False,
@@ -32,10 +32,6 @@ crates_vendor(
             features = ["postgres"],
             package = "diesel_migrations",
             version = "2.2.0",
-        ),
-        "dotenvy": crate.spec(
-            package = "dotenvy",
-            version = "0.15",
         ),
     },
     repository_name = "deps_vendored",

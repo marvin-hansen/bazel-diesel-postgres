@@ -11,6 +11,7 @@ package(default_visibility = ["//visibility:public"])
 exports_files(
     [
         "cargo-bazel.json",
+        "crates.bzl",
         "defs.bzl",
     ] + glob(
         include = ["*.bazel"],
@@ -32,18 +33,12 @@ filegroup(
 # Workspace Member Dependencies
 alias(
     name = "diesel",
-    actual = "//thirdparty/crates/diesel-2.2.4:diesel",
+    actual = "@deps_vendored__diesel-2.2.4//:diesel",
     tags = ["manual"],
 )
 
 alias(
     name = "diesel_migrations",
-    actual = "//thirdparty/crates/diesel_migrations-2.2.0:diesel_migrations",
-    tags = ["manual"],
-)
-
-alias(
-    name = "dotenvy",
-    actual = "//thirdparty/crates/dotenvy-0.15.7:dotenvy",
+    actual = "@deps_vendored__diesel_migrations-2.2.0//:diesel_migrations",
     tags = ["manual"],
 )

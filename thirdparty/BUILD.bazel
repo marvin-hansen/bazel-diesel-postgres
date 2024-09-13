@@ -3,18 +3,18 @@ load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_vendor")
 crates_vendor(
     name = "crates_vendor",
     annotations = {
-            "pq-sys": [
-                crate.annotation(
-                    build_script_env = {
-                        "PQ_LIB_STATIC": "1",
-                    },
-                    deps = ["@@//alias:libpq"],
-                    rustc_flags = [
-                        "-L",
-                        "$(BINDIR)/@@//alias:libpq",
-                    ],
-                ),
-            ],
+        "pq-sys": [
+            crate.annotation(
+                build_script_env = {
+                    "PQ_LIB_STATIC": "1",
+                },
+                rustc_flags = [
+                    "-L",
+                    "$(BINDIR)/@@//alias:libpq",
+                ],
+                deps = ["@@//alias:libpq"],
+            ),
+        ],
     },
     mode = "local",
     packages = {

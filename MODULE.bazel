@@ -133,7 +133,8 @@ register_toolchains("@rust_toolchains//:all")
 ###############################################################################
 # RUST SYSTEM DEPENDENCIES
 ###############################################################################
-crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
+crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate", isolate = True)
+
 # External crates
 crate.spec(
     default_features = False,
@@ -159,7 +160,6 @@ crate.annotation(
     build_script_env = {
         "PQ_LIB_STATIC": "1",
     },
-    gen_build_script = "off",
     rustc_flags = [
         "-L",
         "$(BINDIR)/@@//alias:libpq",

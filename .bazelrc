@@ -35,6 +35,9 @@ build --jobs=32
 # Enable Bzlmod for every Bazel command
 common --enable_bzlmod
 
+# Enable isolated extension usages in use_extension for crate_universe
+common --experimental_isolated_extension_usages
+
 # Write build outputs in a platform-specific directory;
 # avoid outputs being wiped and rewritten when switching between platforms.
 common --experimental_platform_in_output_dir

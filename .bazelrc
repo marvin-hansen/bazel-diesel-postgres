@@ -35,7 +35,7 @@ build --jobs=32
 # Enable Bzlmod for every Bazel command
 common --enable_bzlmod
 
-# Enable isolated extension usages in use_extension for crate_universe
+# Enable isolated extension usages for crate_universe
 common --experimental_isolated_extension_usages
 
 # Write build outputs in a platform-specific directory;
@@ -63,10 +63,6 @@ common --experimental_profile_include_primary_output
 
 # Enable C++ toolchain resolution.
 common --incompatible_enable_cc_toolchain_resolution
-
-# Extra Cross compilation execution platforms
-# build --extra_execution_platforms=//build/platforms:linux-aarch64
-# build --extra_execution_platforms=//build/platforms:linux-x86_64
 
 ###############################################################################
 ## Test configuration
